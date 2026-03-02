@@ -9,18 +9,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# 2. Personnalisation du style (Correction du paramètre ici)
-st.markdown("""
-    <style>
-        .stApp {
-            background-color: #f8f9fa;
-        }
-        [data-testid="stSidebar"] {
-            background-color: #111827;
-        }
-    </style>
-""", unsafe_allow_html=True) # Correction effectuée : unsafe_allow_html
-
 # 3. Barre latérale (Sidebar)
 with st.sidebar:
     st.title("🛡️ Sécurité SI")
