@@ -1,0 +1,20 @@
+# Framework Web
+streamlit==1.31.0
+
+# Manipulation et analyse de données
+pandas==2.2.0
+numpy==1.26.4
+
+# Visualisation 
+plotly==5.18.0
+
+# Machine Learning 
+scikit-learn==1.4.0
+
+# IA Générative 
+mistralai==0.4.2
+
+# Utilitaires & Connexion Base de données 
+python-dotenv==1.0.1
+sqlalchemy==2.0.27
+mysql-connector-python==8.3.0
