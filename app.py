@@ -1,28 +1,47 @@
 import streamlit as st
+# Importation des pages (Assure-toi que les fichiers existent dans le dossier views)
+from views import home, dashboard, ml_analysis, llm_expert
 
-# Configuration de la page
-st.set_page_config(page_title="SOC Dashboard SISE-OPSIE", layout="wide")
+# 1. Configuration de la page
+st.set_page_config(
+    page_title="SOC Dashboard | SISE-OPSIE 2026",
+    page_icon="🛡️",
+    layout="wide"
+)
 
-st.sidebar.title("Navigation")
-page = st.sidebar.radio("Aller vers :", 
-    ["Accueil & Données", "Dashboard Descriptif", "Analyse ML", "Expert LLM"])
+# 2. Personnalisation du style (Correction du paramètre ici)
+st.markdown("""
+    <style>
+        .stApp {
+            background-color: #f8f9fa;
+        }
+        [data-testid="stSidebar"] {
+            background-color: #111827;
+        }
+    </style>
+""", unsafe_allow_html=True) # Correction effectuée : unsafe_allow_html
 
-if page == "Accueil & Données":
-    st.title("🛡️ SOC Dashboard - SISE 2026")
-    st.write("Bienvenue Mazilda. Chargez les logs des OPSIE pour commencer.")
-    # Ici, tu mettras le code pour charger le CSV ou se connecter à MariaDB
+# 3. Barre latérale (Sidebar)
+with st.sidebar:
+    st.title("🛡️ Sécurité SI")
+    st.markdown("---")
+    
+    selection = st.radio(
+        "Navigation",
+        ["🏠 Accueil", "📊 Dashboard", "🤖 Machine Learning", "🧠 Expert LLM"],
+        index=2
+    )
+    
+    st.markdown("---")
+    st.caption("Projet Master SISE 2026")
+    st.caption("Fait par...")
 
-elif page == "Dashboard Descriptif":
-    st.title("📊 Analyse descriptive des flux")
-    st.info("Cette section répond aux exigences 1.5 du projet.")
-    # Appel de ta fonction de dashboard (Top 5 IP, Top 10 ports < 1024, etc.)
-
-elif page == "Analyse ML":
-    st.title("🤖 Intelligence Artificielle - Clustering")
-    st.write("Analyse des comportements suspects via Machine Learning.")
-    # Ici, ton collègue ML intégrera son code
-
-elif page == "Expert LLM":
-    st.title("🧠 Expert IA Générative")
-    st.write("Interpréteur de logs et aide à la décision.")
-    # Ici, ton collègue LLM intégrera son code
+# 4. Routage
+if selection == "🏠 Accueil":
+    home.show()
+elif selection == "📊 Dashboard":
+    dashboard.show()
+elif selection == "🤖 Machine Learning":
+    ml_analysis.show()
+elif selection == "🧠 Expert LLM":
+    llm_expert.show()
