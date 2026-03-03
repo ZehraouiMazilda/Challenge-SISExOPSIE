@@ -98,11 +98,11 @@ def show():
         elif port_range == "Plage personnalisée":
             filtered_df = filtered_df[(filtered_df['dest_port'] >= min_port) & (filtered_df['dest_port'] <= max_port)]
 
-        # ========== Bar Chart + Line Chart in Container ==========
+        # Bar Chart + Line Chart in Container 
         with st.container(border=True):
             col1, col2 = st.columns([1, 2])
 
-            # ========== COLUMN 1: Bar Chart (Protocol Comparison) ==========
+            # COLUMN 1: Bar Chart (Protocol Comparison) 
             with col1:
                 protocol_action = pd.crosstab(filtered_df['protocol'], filtered_df['action'])
                 fig_protocol_action = go.Figure()
@@ -133,7 +133,7 @@ def show():
                 )
                 st.plotly_chart(fig_protocol_action, use_container_width=True)
 
-            # ========== COLUMN 2: Line Chart (Traffic Over Time) ==========
+            # COLUMN 2: Line Chart (Traffic Over Time) 
             with col2:
                 def categorize_port(port):
                     if port < 1024:
@@ -197,7 +197,7 @@ def show():
         
         st.divider()
         
-        # === TCP vs UDP DETAILED COMPARISON ===
+        # TCP vs UDP DETAILED COMPARISON 
         st.header("📡 Comparaison Détaillée TCP vs UDP")
 
         tcp_data = filtered_df[filtered_df['protocol'] == 'TCP']
@@ -273,7 +273,7 @@ def show():
         
         st.divider()
         
-        # === PORT DISTRIBUTION BY RFC 6056 CATEGORIES ===
+        # PORT DISTRIBUTION BY RFC 6056 CATEGORIES 
         st.header("📊 Distribution des Ports selon RFC 6056")
         with st.container(border=True):
             port_cat_dist = filtered_df['port_category'].value_counts().reset_index()
@@ -327,7 +327,7 @@ def show():
         
         st.divider()
         
-        # === TOP 5 IP SOURCES ===
+        # TOP 5 IP SOURCES 
         st.header("🔝 IP Sources")
         
         with st.container(border=True):
@@ -387,7 +387,7 @@ def show():
                 
         st.divider()
         
-        # === TOP 10 PORTS < 1024 ===
+        # TOP 10 PORTS < 1024 
         st.header("🔌 Top 10 Ports Privilégiés (< 1024)")
         
         ports_privileged = filtered_df[filtered_df['dest_port'] < 1024]
@@ -449,7 +449,7 @@ def show():
         st.divider()
         
         
-        # === RAW DATA ===
+        # RAW DATA 
         st.header("📄 Données Brutes")
 
         col1, col2, col3 = st.columns(3)
