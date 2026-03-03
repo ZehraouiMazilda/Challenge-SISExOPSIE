@@ -23,9 +23,8 @@ from sklearn.pipeline import Pipeline
 import warnings
 warnings.filterwarnings("ignore")
 
-# ─────────────────────────────────────────────
 # STYLES GLOBAUX
-# ─────────────────────────────────────────────
+
 STYLE = """
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap');
@@ -247,9 +246,8 @@ pre { background: #0d1321 !important; border: 1px solid var(--border) !important
 </style>
 """
 
-# ─────────────────────────────────────────────
 # HELPERS UI
-# ─────────────────────────────────────────────
+
 def section_header(icon, title, subtitle, icon_class="icon-blue"):
     st.markdown(f"""
     <div class="section-header">
@@ -289,9 +287,8 @@ def styled_fig(fig):
     fig.update_layout(**PLOTLY_TEMPLATE)
     return fig
 
-# ─────────────────────────────────────────────
 # CHARGEMENT ET PRÉPARATION DES DONNÉES
-# ─────────────────────────────────────────────
+
 @st.cache_data
 def charger_donnees():
     df = pd.read_csv("data/data_exm.csv")
@@ -329,9 +326,8 @@ def construire_features_comportementales(df):
     features['Ratio_Rejet'] = features['Nombre_Rejets'] / features['Nombre_Connexions']
     return features
 
-# ─────────────────────────────────────────────
 # ONGLET 1 : INGÉNIERIE DES DESCRIPTEURS
-# ─────────────────────────────────────────────
+
 def onglet_feature_engineering(df, features):
     section_header("🔬", "Ingénierie des Descripteurs Comportementaux",
                    "Construction des variables prédictives à partir des logs bruts", "icon-blue")
@@ -377,9 +373,8 @@ def onglet_feature_engineering(df, features):
         ("Taux de rejet global", f"{df['Est_Rejet'].mean():.1%}", "red"),
     ])
 
-# ─────────────────────────────────────────────
 # ONGLET 2 : ISOLATION FOREST
-# ─────────────────────────────────────────────
+
 def onglet_isolation_forest(features):
     section_header("🌲", "Détection d'Anomalies — Isolation Forest",
                    "Apprentissage non supervisé : isolation rapide des points aberrants", "icon-red")
@@ -463,9 +458,8 @@ def onglet_isolation_forest(features):
 
     return features  # on retourne avec les colonnes Statut
 
-# ─────────────────────────────────────────────
 # ONGLET 3 : LOF
-# ─────────────────────────────────────────────
+
 def onglet_lof(features):
     section_header("📡", "Détection d'Anomalies — Local Outlier Factor (LOF)",
                    "Détection par densité locale : les anomalies vivent dans des zones peu denses", "icon-orange")
@@ -525,9 +519,8 @@ def onglet_lof(features):
 
     return features
 
-# ─────────────────────────────────────────────
 # ONGLET 4 : ACP
-# ─────────────────────────────────────────────
+
 def onglet_acp(features):
     section_header("🔭", "Visualisation Factorielle — Analyse en Composantes Principales",
                    "Réduction de dimension pour valider visuellement les anomalies détectées", "icon-purple")
@@ -640,9 +633,8 @@ def onglet_acp(features):
     st.plotly_chart(fig_cercle, use_container_width=True)
     return features
 
-# ─────────────────────────────────────────────
 # ONGLET 5 : K-MEANS
-# ─────────────────────────────────────────────
+
 def onglet_kmeans(features):
     section_header("🔵", "Classification Automatique — K-Means",
                    "Partitionnement non supervisé pour identifier des groupes de comportements homogènes", "icon-blue")
@@ -659,7 +651,7 @@ def onglet_kmeans(features):
     scaler = StandardScaler()
     X_reduit = scaler.fit_transform(features[cols_kmeans])
 
-    # Recherche du K optimal (méthode du coude)
+    # Recherche du K optimal 
     k_max = st.slider("Nombre maximum de clusters à tester", 3, 12, 8)
     inerties, silhouettes = [], []
     plage_k = range(2, k_max + 1)
@@ -740,9 +732,8 @@ def onglet_kmeans(features):
     st.dataframe(profil, use_container_width=True)
 
 
-# ─────────────────────────────────────────────
 # ONGLET 6 : CLASSIFICATION SUPERVISÉE
-# ─────────────────────────────────────────────
+
 def onglet_classification_supervisee(df):
     section_header("🎯", "Classification Supervisée — Comparaison de Modèles",
                    "Régression logistique, Arbre CART, SVM et Forêt Aléatoire avec validation croisée", "icon-green")
@@ -759,7 +750,7 @@ def onglet_classification_supervisee(df):
     df_model['Tranche_Port'] = pd.cut(
         df_model['Port_Destination'],
         bins=[0, 1023, 49151, 65535],
-        labels=[0, 1, 2]  # Bien connu / Enregistré / Dynamique (RFC 6056)
+        labels=[0, 1, 2]  # Bien connu / Enregistré / Dynamique 
     ).astype(int)
 
     X = df_model[['Port_Destination', 'Est_TCP', 'Tranche_Port', 'Heure', 'Jour_Semaine']]
@@ -864,9 +855,8 @@ def onglet_classification_supervisee(df):
     st.plotly_chart(fig_roc, use_container_width=True)
 
 
-# ─────────────────────────────────────────────
 # ONGLET 7 : ARBRE DE DÉCISION + RÈGLES
-# ─────────────────────────────────────────────
+
 def onglet_arbre_regles(df):
     section_header("📋", "Extraction de Règles de Sécurité — Arbre CART",
                    "Interprétation humaine : transformation de l'arbre en règles de pare-feu actionnables", "icon-purple")
@@ -953,9 +943,8 @@ def onglet_arbre_regles(df):
         st.plotly_chart(fig_mat, use_container_width=True)
 
 
-# ─────────────────────────────────────────────
 # ONGLET 8 : BILAN ET SYNTHÈSE
-# ─────────────────────────────────────────────
+
 def onglet_bilan(df, features):
     section_header("📊", "Synthèse et Recommandations",
                    "Vue d'ensemble des résultats et recommandations opérationnelles", "icon-green")
@@ -1007,9 +996,8 @@ def onglet_bilan(df, features):
     """)
 
 
-# ─────────────────────────────────────────────
 # POINT D'ENTRÉE PRINCIPAL
-# ─────────────────────────────────────────────
+
 def show():
     st.markdown(STYLE, unsafe_allow_html=True)
 
@@ -1082,4 +1070,5 @@ def show():
         onglet_arbre_regles(df)
 
     with onglets[7]:
+
         onglet_bilan(df, features)
