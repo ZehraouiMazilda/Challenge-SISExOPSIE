@@ -197,7 +197,7 @@ Année universitaire 2025–2026
 __Maissa Lajimi__, 
 __Aya Mecheri__,
 __Mazilda Zehraoui__,
-__Nom 4__, 
+__Aatany Oussama__, 
 __Nom 5__ et 
 __Nom 6__  
 
