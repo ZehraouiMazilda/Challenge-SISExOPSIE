@@ -3,10 +3,7 @@ pandas==2.2.0
 numpy==1.26.4
 plotly==5.18.0
 scikit-learn==1.4.0
-mistralai==0.4.2
 python-dotenv==1.0.1
-sqlalchemy==2.0.27
-mysql-connector-python==8.3.0
 groq==1.0.0
 chromadb==1.5.2
-sentence-transformers==5.2.3
+fpdf2==2.7.9

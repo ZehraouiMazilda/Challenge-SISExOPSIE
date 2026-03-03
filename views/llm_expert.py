@@ -347,4 +347,3 @@ def show():
                             st.markdown(f'''<div class="src-chunk"><b>Chunk {j+1}</b><br>{c[:350]}</div>''',unsafe_allow_html=True)
             st.session_state.llm_history.append({"role":"assistant","content":answer})
             st.rerun()
-
