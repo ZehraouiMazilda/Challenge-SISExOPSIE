@@ -1,5 +1,8 @@
 import streamlit as st
-from views import home, dashboard, ml_analysis, llm_expert
+import views.home as home
+import views.dashboard as dashboard
+import views.ml_analysis as ml_analysis
+import views.llm_expert as llm_expert
 
 st.set_page_config(
     page_title="AegisNet | SISE-OPSIE 2026",
@@ -147,5 +150,4 @@ elif page == "dashboard":
 elif page == "ml_analysis":
     ml_analysis.show()
 elif page == "llm_expert":
-
     llm_expert.show()
