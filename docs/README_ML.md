@@ -1,152 +1,139 @@
-# ⚙️ Analyse par Apprentissage Automatique des Logs Iptables
+# 🤖 Module Machine Learning — Analyse Avancée des Logs Iptables
 
-## 🎯 Objectif du projet
+## 🎯 Objectif
 
-Cette application Streamlit permet d'analyser des logs réseau issus d'un
-pare-feu Iptables afin de :
+Ce module implémente une chaîne complète d’apprentissage automatique pour :
 
--   Détecter automatiquement des comportements suspects
--   Comparer plusieurs modèles d'apprentissage automatique
--   Extraire des règles de sécurité interprétables
--   Produire des recommandations opérationnelles
+- Détecter des comportements anormaux
+- Classifier les flux réseau
+- Extraire des règles interprétables
+- Visualiser les structures cachées
 
-Le projet combine des approches non supervisées, supervisées et des
-outils de visualisation avancée.
+---
 
-------------------------------------------------------------------------
+# 🏗️ Pipeline Global
 
-# 🗂 Données utilisées
+```mermaid
+flowchart LR
+    A[Logs CSV] --> B[Feature Engineering]
+    B --> C[Standardisation]
+    C --> D[Modèles Non Supervisés]
+    C --> E[Modèles Supervisés]
+    D --> F[Visualisation ACP]
+    E --> G[Évaluation ROC & CV]
+```
 
-Fichier attendu :
+---
 
-data/data_exm.csv
+# 🔬 1. Feature Engineering
 
-Colonnes principales :
+Chaque IP source est transformée en vecteur comportemental :
 
--   Date
--   Adresse_IP_Source
--   Adresse_IP_Destination
--   Protocole
--   Port_Destination
--   Action (Permit / Deny)
--   Identifiant_Regle
--   Interface_Entree
--   Interface_Sortie
+- Nombre_Ports_Distincts
+- Nombre_Rejets
+- Nombre_Connexions
+- Duree_Minutes
+- Vitesse_Connexion_Par_Minute
+- Ratio_Rejet
+- Ratio_TCP
+- Port_Max
 
-Variables dérivées automatiquement :
+But : transformer des logs événementiels en profils exploitables.
 
--   Heure
--   Jour_Semaine
--   Est_Rejet
--   Est_TCP
+---
 
-------------------------------------------------------------------------
+# 🌲 2. Isolation Forest
 
-# 🧭 Organisation de l'application
+### Paramètres :
+- contamination : 0.01 → 0.20
+- n_estimators : 50 → 500
+- random_state : 42
 
-L'application est structurée en 8 onglets, chacun correspondant à une
-étape analytique précise.
+### Principe :
+Les anomalies sont isolées plus rapidement dans des arbres aléatoires.
 
-------------------------------------------------------------------------
+Score :
+- Plus négatif = plus suspect
 
-## 🔬 1. Descripteurs Comportementaux
+---
 
-Les logs bruts sont transformés en profils comportementaux par adresse
-IP.
+# 📡 3. Local Outlier Factor (LOF)
 
-Variables construites :
+### Paramètres :
+- n_neighbors : 5 → 50
+- contamination
 
--   Nombre_Ports_Distincts
--   Nombre_Rejets
--   Nombre_Connexions
--   Duree_Minutes
--   Vitesse_Connexion_Par_Minute
--   Ratio_Rejet
--   Ratio_TCP
--   Port_Max
+### Principe :
+Compare la densité locale d’un point à celle de ses voisins.
 
-------------------------------------------------------------------------
+---
 
-## 🌲 2. Isolation Forest
+# 🔵 4. K-Means
 
-Détection d'anomalies non supervisée.
+### Paramètres :
+- Nombre de clusters K (2 → 12)
+- n_init = 10
+- random_state = 42
 
-Paramètres : - Contamination (0.01 → 0.20) - Nombre d'arbres (50 → 500)
+Méthodes d’évaluation :
+- Inertie (méthode du coude)
+- Coefficient de silhouette
 
-------------------------------------------------------------------------
+---
 
-## 📡 3. Local Outlier Factor (LOF)
+# 🎯 5. Classification Supervisée
 
-Détection basée sur la densité locale.
+### Variables utilisées :
+- Port_Destination
+- Est_TCP
+- Tranche_Port
+- Heure
+- Jour_Semaine
 
-Paramètres : - Nombre de voisins (k) - Taux de contamination
+### Modèles :
 
-------------------------------------------------------------------------
+- LogisticRegression (L1 & L2)
+- DecisionTreeClassifier (max_depth=4)
+- RandomForestClassifier (100 arbres, max_depth=5)
 
-## 🔭 4. Analyse en Composantes Principales (ACP)
+### Évaluation :
+- Validation croisée StratifiedKFold (5 plis)
+- Accuracy
+- AUC-ROC
+- Courbes ROC
 
-Visualisation factorielle des comportements.
+---
 
--   Standardisation
--   Projection sur axes principaux
--   Variance expliquée
--   Cercle des corrélations
+# 🌳 6. Extraction de Règles (CART)
 
-------------------------------------------------------------------------
+Paramètres ajustables :
+- max_depth (2 → 6)
+- min_samples_leaf (5 → 100)
 
-## 🔵 5. K-Means
+Sorties :
+- Règles textuelles
+- Importance Gini
+- Matrice de confusion
 
-Clustering non supervisé des comportements.
+---
 
--   Méthode du coude
--   Score de silhouette
--   Projection ACP des clusters
+# 📊 ACP (Analyse en Composantes Principales)
 
-------------------------------------------------------------------------
+Objectif :
+- Réduction dimensionnelle
+- Validation visuelle des anomalies
 
-## 🎯 6. Classification Supervisée
+Sorties :
+- Plan factoriel
+- Variance expliquée
+- Cercle des corrélations
 
-Modèles comparés :
+---
 
--   Régression Logistique (L1 / L2)
--   Arbre CART
--   Forêt Aléatoire
+# 📌 Conclusion
 
-Validation croisée stratifiée (5 plis) avec métriques Accuracy et
-AUC-ROC.
-
-------------------------------------------------------------------------
-
-## 📋 7. Extraction de Règles (CART)
-
-Transformation de l'arbre en règles exploitables pour le pare-feu.
-
-------------------------------------------------------------------------
-
-## 📊 8. Synthèse
-
-Analyses finales :
-
--   Évolution temporelle des flux
--   Top ports rejetés
--   Distribution horaire
-
-Recommandations opérationnelles fournies.
-
-------------------------------------------------------------------------
-
-# 🛠 Technologies utilisées
-
--   Streamlit
--   Scikit-learn
--   Plotly
--   Pandas
--   NumPy
-
-------------------------------------------------------------------------
-
-# 🚀 Lancement
-
-streamlit run ml_analysis.py
-
-Vérifier la présence du fichier : data/data_exm.csv
+Module complet combinant :
+- Détection non supervisée
+- Classification supervisée
+- Interprétabilité
+- Validation visuelle
