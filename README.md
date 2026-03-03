@@ -174,37 +174,67 @@ La clé ne doit jamais être versionnée.
 
 # 🚀 Lancement
 
-1️⃣ **Cloner le repository**
-
-```
-git clone https://github.com/VOTRE-REPO/Challenge-SISExOPSIE.git
-cd Challenge-SISExOPSIE
-```
-
-
-2️⃣ **Créer le fichier `.env` à la racine**
-
-Créer un fichier `.env` contenant votre clé API Groq :
+### 1️⃣ Setup
+Clonez le dépôt et préparez votre environnement :
 
 ```bash
+git clone https://github.com/VOTRE-REPO/Challenge-SISExOPSIE.git
+cd Challenge-SISExOPSIE
+
+# Créer le fichier .env avec votre clé API
 echo "GROQ_API_KEY=votre_clé_ici" > .env
 ```
 
-3️⃣ **Build de l’image Docker**
+---
+
+## 🛠️ Choisissez votre méthode
+
+### 🐳 Option 1 : Docker
+
+**Build de l’image :**
 
 ```bash
 docker build -t challenge-sise .
 ```
 
-4️⃣ **Lancer le conteneur**
+**Lancer le conteneur :**
 
 ```bash
 docker run -p 8501:8501 --env-file .env challenge-sise
 ```
 
-🌐 **Accès à l’application**
+---
 
-Une fois le conteneur lancé, l’application est disponible sur :
+### 💻 Option 2 : Installation Locale
+
+**1️⃣ Créer et activer un environnement virtuel :**
+
+```bash
+python -m venv env
+
+# Windows :
+env\Scripts\activate
+
+# Mac / Linux :
+source env/bin/activate
+```
+
+**2️⃣ Installer les dépendances :**
+
+```bash
+pip install -r requirements.txt
+```
+
+**3️⃣ Lancer l’application :**
+
+```bash
+streamlit run app.py
+```
+
+---
+
+## 🌐 Accès à l’application
+Une fois le service démarré, l’interface est accessible ici :  
 
 ```
 http://localhost:8501
