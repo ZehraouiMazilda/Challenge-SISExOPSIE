@@ -238,6 +238,9 @@ Une fois le service démarré, l’interface est accessible ici :
 http://localhost:8501
 ```
 
+
+> **Note :** Pour naviguer entre les pages dans la barre latérale, il ne suffit pas de cliquer sur le titre de la page. Il faut cliquer **juste en dessous du titre** pour que la sélection fonctionne.
+
 # 🎓 Contexte Académique
 
 Projet réalisé dans le cadre du Master 2 SISE et Master 2 OPSIE — Université Lumière Lyon 2  
