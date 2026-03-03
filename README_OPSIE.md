@@ -39,33 +39,63 @@ Les champs extraits et normalises sont:
 - `interface_in`
 - `interface_out`
 
-## 4) Demarrage rapide
-Depuis la racine du projet `Clean_solution`:
+## Installation
+Cette partie a ete testee sous `WSL (Kali)` avec Docker Desktop.
+
+### 1) Prerequis Windows
+
+- Installer **Docker Desktop** (et activer l'integration WSL).
+- Verifier que ta distro Kali est bien active dans Docker Desktop:
+  - `Settings -> Resources -> WSL Integration -> kali-linux`.
+
+### 2) Prerequis WSL/Kali
+
+Dans Kali:
 
 ```bash
+sudo apt update
+sudo apt install -y docker.io docker-compose-plugin curl
+sudo usermod -aG docker $USER
+newgrp docker
+```
+
+Verification:
+
+```bash
+docker --version
+docker compose version
+docker ps
+```
+
+Si `docker ps` ne repond pas, redemarre Docker Desktop puis relance ton terminal WSL.
+
+### 3) Outils utiles pour les tests OPSIE
+
+```bash
+sudo apt install -y nmap netcat-openbsd hydra gobuster nikto hping3
+```
+
+## 5) Demarrage rapide
+
+```bash
+# reseau docker
 docker network create training_opsie 2>/dev/null || true
-```
 
-Lancer la stack syslog + DB + ELK:
-
-```bash
-cd 01-syslog-stack
-docker compose up -d --build
+# stack logs + db + elk
+cd syslog
+docker compose up -d
 docker compose ps
-```
 
-Construire et lancer le firewall:
-
-```bash
-cd ../02-ulog-iptables
-docker build --no-cache -t opsie-ulog-iptables .
+# firewall
+cd ../ulog-iptables
+docker build -t opsie-ulog-iptables .
 SYSLOG_IP=$(docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' opsie-syslog)
 docker rm -f opsie-fw 2>/dev/null || true
 docker run -d --privileged --network training_opsie --name opsie-fw -e SYSLOG_SERVER_IP="$SYSLOG_IP" opsie-ulog-iptables
 docker exec opsie-fw iptables -S | grep NFLOG
 ```
 
-## 5) Verification rapide
+## 6) Verification rapide
 Verifier logs fichier:
 
 ```bash
@@ -86,7 +116,7 @@ curl -s http://localhost:9600/?pretty | grep '"status"'
 curl -s -H 'kbn-xsrf: true' http://localhost:5601/api/status | head
 ```
 
-## 6) Alimentation des donnees
+## 7) Alimentation des donnees
 Verifier d'abord les services demandes (20/21/22/23/80 accessibles, 3306 local only):
 
 ```bash
@@ -120,7 +150,7 @@ nmap -sS -Pn -D 10.0.0.1,192.168.4.1,172.156.2.26,192.168.1.0,10.10.1.101,89.89.
 nmap -Pn --top-ports 100 --scan-delay 1s opsie-fw
 ```
 
-## Scan zombie
+## 7.1) Scan zombie
 
 ```bash
 # 0) Recuperer la cible firewall (IP docker)
@@ -148,7 +178,7 @@ docker exec opsie-db mysql -uroot -pmypass123 -e "USE Logs_fw; SELECT datetime,i
 ```
 
 
-## 7) Dashboard Kibana interactif 
+## 8) Dashboard Kibana interactif 
 URL Kibana: `http://localhost:5601`
 
 Data view:
@@ -174,7 +204,7 @@ Controls interactifs:
 - `policyid.keyword`
 - `ipsrc.keyword`
 
-## 8) Preuves pour le rendu
+## 9) Preuves pour le rendu
 Exporter les preuves:
 
 ```bash
@@ -201,7 +231,7 @@ Contient notamment:
 - historique commandes
 - statut conteneurs
 
-## 9) Etat actuel
+## 10) Etat actuel
 La chaine OPSIE est operationnelle et conforme sur les points principaux du sujet:
 
 - ingestion logs OK
