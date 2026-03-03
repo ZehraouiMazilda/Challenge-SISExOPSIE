@@ -174,16 +174,41 @@ La clé ne doit jamais être versionnée.
 
 # 🚀 Lancement
 
-Cloner le projet :
+1️⃣ **Cloner le repository**
 
 ```
 git clone https://github.com/VOTRE-REPO/Challenge-SISExOPSIE.git
 cd Challenge-SISExOPSIE
 ```
 
-Puis lancer via Docker ou en local selon la configuration décrite dans le dossier OPSIE.
 
----
+2️⃣ **Créer le fichier `.env` à la racine**
+
+Créer un fichier `.env` contenant votre clé API Groq :
+
+```bash
+echo "GROQ_API_KEY=votre_clé_ici" > .env
+```
+
+3️⃣ **Build de l’image Docker**
+
+```bash
+docker build -t challenge-sise .
+```
+
+4️⃣ **Lancer le conteneur**
+
+```bash
+docker run -p 8501:8501 --env-file .env challenge-sise
+```
+
+🌐 **Accès à l’application**
+
+Une fois le conteneur lancé, l’application est disponible sur :
+
+```
+http://localhost:8501
+```
 
 # 🎓 Contexte Académique
 
